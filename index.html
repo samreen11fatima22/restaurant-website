@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Saffron & Co. — Artisan Kitchen</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --orange: #E8521A;
+    --orange-light: #FF7A40;
+    --orange-pale: #FFF1EB;
+    --dark: #1A1208;
+    --brown: #3D2B1F;
+    --cream: #FAF7F2;
+    --muted: #8C7B6E;
+    --card-bg: #FFFFFF;
+    --border: rgba(61,43,31,0.1);
+    --shadow: 0 4px 32px rgba(232,82,26,0.10);
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 6vw;
+    background: rgba(250,247,242,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--dark); letter-spacing: -0.02em; }
+  .nav-logo span { color: var(--orange); }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a { text-decoration: none; font-size: 0.9rem; font-weight: 400; color: var(--muted); letter-spacing: 0.01em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--orange); }
+  .nav-cta { background: var(--orange); color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--orange-light); }
+  .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .nav-toggle span { width: 24px; height: 2px; background: var(--dark); border-radius: 2px; transition: 0.3s; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    padding: 8rem 6vw 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -120px; right: -120px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,82,26,0.10) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--orange-pale); color: var(--orange);
+    font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    margin-bottom: 1.4rem;
+  }
+  .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--orange); border-radius: 50%; }
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.12;
+    color: var(--dark);
+    letter-spacing: -0.03em;
+    margin-bottom: 1.4rem;
+  }
+  h1 em { font-style: italic; color: var(--orange); }
+  .hero-desc { font-size: 1.05rem; color: var(--muted); line-height: 1.75; max-width: 440px; margin-bottom: 2rem; font-weight: 300; }
+  .hero-actions { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .btn-primary { background: var(--orange); color: #fff; border: none; padding: 0.9rem 2rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,82,26,0.25); }
+  .btn-ghost { background: transparent; color: var(--dark); border: 1.5px solid var(--border); padding: 0.9rem 1.8rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+  .btn-ghost:hover { border-color: var(--orange); color: var(--orange); }
+  .category-pills { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+  .pill { display: inline-block; background: #fff; color: var(--brown); border: 1px solid var(--border); padding: 0.4rem 1.1rem; border-radius: 100px; font-size: 0.83rem; font-weight: 400; cursor: pointer; transition: all 0.18s; }
+  .pill:hover, .pill.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+  .hero-image-wrap {
+    position: relative;
+    display: flex; justify-content: center; align-items: center;
+  }
+  .hero-img-ring {
+    width: clamp(320px, 42vw, 540px);
+    height: clamp(320px, 42vw, 540px);
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(232,82,26,0.12), rgba(232,82,26,0.04));
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .hero-img-ring::before {
+    content: '';
+    position: absolute; inset: -12px;
+    border-radius: 50%;
+    border: 1.5px dashed rgba(232,82,26,0.25);
+  }
+  .hero-img-ring img {
+    width: 90%; height: 90%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-badge {
+    position: absolute; bottom: 10%; left: -5%;
+    background: #fff; border-radius: 16px;
+    padding: 0.75rem 1.1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+    display: flex; align-items: center; gap: 0.7rem;
+    font-size: 0.82rem; font-weight: 500;
+    white-space: nowrap;
+  }
+  .hero-badge .star { color: #F59E0B; font-size: 1rem; }
+  .hero-stat { display: flex; flex-direction: column; }
+  .hero-stat strong { font-size: 1.1rem; color: var(--dark); font-weight: 700; }
+  .hero-stat span { color: var(--muted); font-size: 0.78rem; font-weight: 300; }
+  .hero-badge2 {
+    position: absolute; top: 12%; right: -4%;
+    background: var(--orange); color: #fff; border-radius: 12px;
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem; font-weight: 500;
+    text-align: center;
+  }
+  .hero-badge2 strong { display: block; font-size: 1.4rem; font-weight: 700; }
+
+  /* STATS STRIP */
+  .stats {
+    background: var(--dark);
+    padding: 2rem 6vw;
+    display: flex; gap: 2rem;
+    align-items: center; justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; color: #fff; }
+  .stat-item strong { display: block; font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--orange); }
+  .stat-item span { font-size: 0.85rem; color: rgba(255,255,255,0.55); font-weight: 300; letter-spacing: 0.05em; text-transform: uppercase; }
+  .stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,0.12); }
+
+  /* MENU SECTION */
+  .section { padding: 6rem 6vw; }
+  .section-header { text-align: center; margin-bottom: 3.5rem; }
+  .section-eyebrow { display: inline-block; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.75rem; }
+  h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem); color: var(--dark); letter-spacing: -0.02em; line-height: 1.2; }
+  .section-sub { color: var(--muted); font-size: 1rem; font-weight: 300; margin-top: 0.75rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+  .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.8rem; }
+  .menu-card {
+    background: var(--card-bg); border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .menu-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(232,82,26,0.12); border-color: rgba(232,82,26,0.2); }
+  .menu-card-img { position: relative; overflow: hidden; height: 220px; }
+  .menu-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .menu-card:hover .menu-card-img img { transform: scale(1.06); }
+  .menu-card-badge { position: absolute; top: 12px; left: 12px; background: var(--orange); color: #fff; font-size: 0.72rem; font-weight: 500; padding: 0.3rem 0.75rem; border-radius: 100px; letter-spacing: 0.04em; }
+  .menu-card-fav { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; background: rgba(255,255,255,0.92); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; border: none; }
+  .menu-card-body { padding: 1.3rem 1.5rem 1.5rem; }
+  .menu-card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+  .menu-card-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--dark); font-weight: 700; }
+  .menu-card-price { font-size: 1.1rem; color: var(--orange); font-weight: 600; }
+  .menu-card-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.65; margin-bottom: 1.2rem; font-weight: 300; }
+  .menu-card-footer { display: flex; align-items: center; justify-content: space-between; }
+  .menu-card-rating { display: flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: var(--muted); }
+  .rating-stars { color: #F59E0B; font-size: 0.82rem; letter-spacing: 1px; }
+  .btn-add { background: var(--orange-pale); color: var(--orange); border: none; padding: 0.5rem 1.2rem; border-radius: 100px; font-size: 0.85rem; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+  .btn-add:hover { background: var(--orange); color: #fff; }
+
+  /* INFO SECTION */
+  .info-section {
+    padding: 6rem 6vw;
+    background: var(--dark);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .info-img-wrap { position: relative; }
+  .info-img-main {
+    width: 100%; height: 480px;
+    border-radius: 24px;
+    object-fit: cover;
+    display: block;
+  }
+  .info-img-accent {
+    position: absolute; bottom: -24px; right: -24px;
+    width: 180px; height: 180px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 4px solid var(--dark);
+  }
+  .info-content { color: #fff; }
+  .info-content .section-eyebrow { color: var(--orange); }
+  .info-content h2 { color: #fff; margin-bottom: 1.2rem; }
+  .info-content p { color: rgba(255,255,255,0.55); font-size: 1rem; line-height: 1.8; font-weight: 300; margin-bottom: 2rem; }
+  .info-features { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 2.5rem; }
+  .info-features li { display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.95rem; color: rgba(255,255,255,0.7); }
+  .feat-dot { width: 22px; height: 22px; border-radius: 50%; background: rgba(232,82,26,0.25); border: 1.5px solid var(--orange); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .feat-dot::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+  .btn-light { background: #fff; color: var(--dark); border: none; padding: 0.9rem 2rem; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+  .btn-light:hover { background: var(--orange); color: #fff; }
+
+  /* TESTIMONIAL */
+  .testimonials { padding: 6rem 6vw; background: var(--cream); }
+  .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .t-card {
+    background: #fff; border-radius: 20px; padding: 1.8rem;
+    border: 1px solid var(--border);
+    position: relative;
+  }
+  .t-card::before { content: '\201C'; font-family: 'Playfair Display', serif; font-size: 5rem; color: var(--orange-pale); line-height: 1; position: absolute; top: 0.5rem; left: 1.2rem; }
+  .t-stars { color: #F59E0B; font-size: 0.85rem; margin-bottom: 1rem; }
+  .t-text { font-size: 0.95rem; color: var(--muted); line-height: 1.7; margin-bottom: 1.5rem; font-weight: 300; position: relative; z-index: 1; }
+  .t-author { display: flex; align-items: center; gap: 0.75rem; }
+  .t-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--orange-pale); display: flex; align-items: center; justify-content: center; font-weight: 600; color: var(--orange); font-size: 0.9rem; }
+  .t-name { font-size: 0.9rem; font-weight: 500; color: var(--dark); }
+  .t-role { font-size: 0.78rem; color: var(--muted); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: rgba(255,255,255,0.45);
+    padding: 3rem 6vw 2rem;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center;
+    gap: 1rem; font-size: 0.85rem;
+  }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #fff; }
+  .footer-logo span { color: var(--orange); }
+  .footer-links { display: flex; gap: 1.8rem; flex-wrap: wrap; }
+  .footer-links a { color: rgba(255,255,255,0.45); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--orange); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; text-align: center; padding: 7rem 5vw 4rem; }
+    .hero-desc { margin: 0 auto 2rem; }
+    .hero-actions, .category-pills { justify-content: center; }
+    .hero-image-wrap { justify-content: center; margin-top: 2rem; }
+    .hero-img-ring { width: 320px; height: 320px; }
+    .info-section { grid-template-columns: 1fr; padding: 4rem 5vw; }
+    .info-img-accent { display: none; }
+    .info-img-main { height: 320px; }
+    .stat-divider { display: none; }
+    .nav-links, .nav-cta { display: none; }
+    .nav-toggle { display: flex; }
+  }
+  @media (max-width: 480px) {
+    .hero { padding: 6rem 4vw 3rem; }
+    h1 { font-size: 2rem; }
+    .section { padding: 4rem 4vw; }
+    .hero-badge { display: none; }
+    .hero-badge2 { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Saffron<span>&</span>Co.</div>
+  <ul class="nav-links">
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#">Reservations</a></li>
+  </ul>
+  <button class="nav-cta">Order Now</button>
+  <div class="nav-toggle"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Fresh · Handcrafted · Delivered</div>
+    <h1>Taste the <em>Art</em> of Authentic Cuisine</h1>
+    <p class="hero-desc">Hand-sourced ingredients, chef-crafted recipes, delivered straight to your table — or your door. A new standard of flavour.</p>
+    <div class="hero-actions">
+      <button class="btn-primary">Explore Menu →</button>
+      <button class="btn-ghost">Watch Story</button>
+    </div>
+    <div class="category-pills">
+      <span class="pill active">All</span>
+      <span class="pill">Pizza</span>
+      <span class="pill">Burgers</span>
+      <span class="pill">Pasta</span>
+      <span class="pill">Desserts</span>
+    </div>
+  </div>
+
+  <div class="hero-image-wrap">
+    <div class="hero-img-ring">
+      <!--
+        IMAGE SUGGESTION — HERO:
+        Source: Unsplash
+        URL: https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700
+        Keywords: "gourmet food plate top view", "restaurant meal aesthetic"
+        Alt: "Artisan pizza on a rustic wooden board"
+      -->
+      <img
+        src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700&auto=format&fit=crop"
+        alt="Artisan gourmet pizza top view"
+      />
+    </div>
+    <div class="hero-badge">
+      <span class="star">★★★★★</span>
+      <div class="hero-stat">
+        <strong>4.9/5</strong>
+        <span>2,400+ reviews</span>
+      </div>
+    </div>
+    <div class="hero-badge2">
+      <strong>50+</strong>
+      Menu Items
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats">
+  <div class="stat-item"><strong>12k+</strong><span>Orders Delivered</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>98%</strong><span>Happy Customers</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>30 min</strong><span>Avg. Delivery</span></div>
+  <div class="stat-divider"></div>
+  <div class="stat-item"><strong>5★</strong><span>Rated Chefs</span></div>
+</div>
+
+<!-- MENU SECTION -->
+<section class="section" id="menu">
+  <div class="section-header">
+    <span class="section-eyebrow">Our Signature Dishes</span>
+    <h2>Crafted for the Curious Palate</h2>
+    <p class="section-sub">Each dish is a love letter to seasonal ingredients and bold flavour profiles.</p>
+  </div>
+  <div class="menu-grid">
+
+    <!-- CARD 1 — PIZZA -->
+    <!-- IMAGE: https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600 | Keywords: "pizza close up wood fire" -->
+    <div class="menu-card">
+      <div class="menu-card-img">
+        <img src="https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600&auto=format&fit=crop" alt="Wood-fired Margherita pizza" />
+        <span class="menu-card-badge">Chef's Pick</span>
+        <button class="menu-card-fav">♡</button>
+      </div>
+      <div class="menu-card-body">
+        <div class="menu-card-meta">
+          <span class="menu-card-name">Margherita Royale</span>
+          <span class="menu-card-price">$18</span>
+        </div>
+        <p class="menu-card-desc">San Marzano tomato, fresh buffalo mozzarella, wild basil, drizzled with cold-pressed olive oil on a 72-hour fermented crust.</p>
+        <div class="menu-card-footer">
+          <div class="menu-card-rating">
+            <span class="rating-stars">★★★★★</span>
+            <span>4.9 (241)</span>
+          </div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2 — BURGER -->
+    <!-- IMAGE: https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600 | Keywords: "burger high quality gourmet" -->
+    <div class="menu-card">
+      <div class="menu-card-img">
+        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&auto=format&fit=crop" alt="Gourmet smash burger stacked" />
+        <span class="menu-card-badge">Best Seller</span>
+        <button class="menu-card-fav">♡</button>
+      </div>
+      <div class="menu-card-body">
+        <div class="menu-card-meta">
+          <span class="menu-card-name">The Saffron Smash</span>
+          <span class="menu-card-price">$22</span>
+        </div>
+        <p class="menu-card-desc">Double wagyu smash patty, aged cheddar, caramelised onions, pickled jalapeño, and our signature saffron aioli on a brioche bun.</p>
+        <div class="menu-card-footer">
+          <div class="menu-card-rating">
+            <span class="rating-stars">★★★★★</span>
+            <span>4.8 (389)</span>
+          </div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3 — PASTA -->
+    <!-- IMAGE: https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=600 | Keywords: "pasta plate aesthetic creamy" -->
+    <div class="menu-card">
+      <div class="menu-card-img">
+        <img src="https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=600&auto=format&fit=crop" alt="Creamy pasta plate aesthetic" />
+        <span class="menu-card-badge">New</span>
+        <button class="menu-card-fav">♡</button>
+      </div>
+      <div class="menu-card-body">
+        <div class="menu-card-meta">
+          <span class="menu-card-name">Truffle Carbonara</span>
+          <span class="menu-card-price">$24</span>
+        </div>
+        <p class="menu-card-desc">Freshly pulled tagliolini, 24-month Pecorino Romano, guanciale crisps, farm egg yolk, and shaved black truffle from Périgord.</p>
+        <div class="menu-card-footer">
+          <div class="menu-card-rating">
+            <span class="rating-stars">★★★★☆</span>
+            <span>4.7 (178)</span>
+          </div>
+          <button class="btn-add">+ Add</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INFORMATION / ABOUT SECTION -->
+<section class="info-section" id="about">
+  <div class="info-img-wrap">
+    <!--
+      IMAGE SUGGESTION — INFO SECTION:
+      Main: https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700
+      Keywords: "chef cooking restaurant kitchen professional"
+      Accent: https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400
+      Keywords: "food delivery aesthetic"
+    -->
+    <img
+      class="info-img-main"
+      src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=700&auto=format&fit=crop"
+      alt="Professional chef cooking in restaurant kitchen"
+    />
+    <img
+      class="info-img-accent"
+      src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&auto=format&fit=crop"
+      alt="Beautifully plated food"
+    />
+  </div>
+  <div class="info-content">
+    <span class="section-eyebrow">Why Saffron & Co.</span>
+    <h2>Where Every Dish Tells a Story</h2>
+    <p>We partner with local farmers and import only the finest seasonal produce. Every recipe is tested 100+ times before it reaches your plate. No shortcuts. No compromises.</p>
+    <ul class="info-features">
+      <li><span class="feat-dot"></span>Locally sourced, seasonal ingredients updated weekly</li>
+      <li><span class="feat-dot"></span>Award-winning chefs with 15+ years of fine-dining experience</li>
+      <li><span class="feat-dot"></span>Zero artificial additives, preservatives, or MSG</li>
+      <li><span class="feat-dot"></span>Eco-conscious packaging, carbon-neutral delivery fleet</li>
+    </ul>
+    <button class="btn-light">Our Full Story →</button>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="reviews">
+  <div class="section-header">
+    <span class="section-eyebrow">Guest Reviews</span>
+    <h2>What Our Diners Say</h2>
+  </div>
+  <div class="testimonial-grid">
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-text">The Truffle Carbonara was a revelation. I've had pasta across three countries, and nothing compares to this. The delivery arrived perfectly hot, too.</p>
+      <div class="t-author">
+        <div class="t-avatar">SL</div>
+        <div>
+          <div class="t-name">Sophia L.</div>
+          <div class="t-role">Food Blogger, Karachi</div>
+        </div>
+      </div>
+    </div>
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-text">Ordered the Saffron Smash for a dinner party — every single guest asked where I got it. The quality is genuinely restaurant-grade at home.</p>
+      <div class="t-author">
+        <div class="t-avatar">AR</div>
+        <div>
+          <div class="t-name">Ahmed R.</div>
+          <div class="t-role">Regular Customer</div>
+        </div>
+      </div>
+    </div>
+    <div class="t-card">
+      <div class="t-stars">★★★★★</div>
+      <p class="t-text">The packaging is gorgeous, the food even more so. I love that they use seasonal menus — every week feels like a new experience. Genuinely addicted.</p>
+      <div class="t-author">
+        <div class="t-avatar">MK</div>
+        <div>
+          <div class="t-name">Maya K.</div>
+          <div class="t-role">Verified Buyer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Saffron<span>&</span>Co.</div>
+  <div class="footer-links">
+    <a href="#">Menu</a>
+    <a href="#">About</a>
+    <a href="#">Delivery</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+  <span>© 2025 Saffron & Co. All rights reserved.</span>
+</footer>
+
+<script>
+  document.querySelectorAll('.pill').forEach(function(p) {
+    p.addEventListener('click', function() {
+      document.querySelectorAll('.pill').forEach(function(x){ x.classList.remove('active'); });
+      p.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.menu-card-fav').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      btn.textContent = btn.textContent === '♡' ? '♥' : '♡';
+      btn.style.color = btn.textContent === '♥' ? '#E8521A' : '';
+    });
+  });
+</script>
+</body>
+</html>
